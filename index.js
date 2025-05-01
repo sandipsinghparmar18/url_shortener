@@ -5,15 +5,18 @@ const { connectToMongoDB } = require("./Database");
 const URL = require("./models/url");
 
 const urlRoute = require("./routes/url");
+const staticRoute = require("./routes/staticRouter");
 
 const app = express();
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.use("/url", urlRoute);
-app.get("/:shortId", async (req, res) => {
+app.use("/", staticRoute);
+app.get("/url/:shortId", async (req, res) => {
   const shortId = req.params.shortId;
   const entry = await URL.findOneAndUpdate(
     {
